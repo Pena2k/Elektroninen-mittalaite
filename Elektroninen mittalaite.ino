@@ -1,4 +1,4 @@
-#include <LiquidCrystal.h> // LCD Kirjasto
+#include <LiquidCrystal.h>
 LiquidCrystal lcd(2, 3, 4, 5, 6, 7);
 
 const int trigPin = 9; //Määritellään Sensorin pinnit.
@@ -8,6 +8,8 @@ float kesto; // Muuttuja ultraäänen matkustusajalle.
 float pituus; // Muuttuja matkan pituudelle.
 
 void setup() {
+  lcd.begin(16, 2);
+  //lcd.print(pituus);
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
   Serial.begin(9600);
@@ -15,7 +17,7 @@ void setup() {
 }
 
 void loop() {
-  digitalWrite(trigPin, LOW); // Tyhjentää arvon asettamalla trigPinnin LOW tilaan 2 mikrosekuntin ajaksi.
+  digitalWrite(trigPin, LOW); // Tyhjentää aron asettamalla trigPinnin LOW tilaan 2 mikrosekuntin ajaksi.
   delayMicroseconds(2);
 
   digitalWrite(trigPin, HIGH); //Generoi ultraäänen näillä kolmella rivillä.
@@ -25,15 +27,19 @@ void loop() {
   kesto = pulseIn(echoPin, HIGH); //PulseIn komennolla luetaan matkustusaika
   pituus = (kesto /2) * 0.0344444 + 0.25; // Laskee pituuden kertomalla PulseIn:in mittaaman keston käyttämällä valon nopeuden kaavaa.
 
-if (pituus >= 400 || pituus <= 2){
-  Serial.print("Pituus = ");
-  Serial.println("Kantavuusalueen ulkopuolella");
+if (pituus >= 400){
+  //lcd.print("Pituus = ");
+  lcd.println("Kantavuusalueen ulkopuolella");
+  delay(500);
+  lcd.clear();
+  delay(500);
 }
 else{
-  Serial.print("Pituus = ");
-    Serial.print(pituus);
-    Serial.println(" cm");
-    delay(500);
+  lcd.setCursor(0,0);
+  lcd.print("Pituus (cm) = ");
+  	delay(100);
+  	lcd.setCursor(0,1);
+  	lcd.print(pituus);
 }
 delay(500);
 }
