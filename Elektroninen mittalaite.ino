@@ -1,5 +1,5 @@
 #include <LiquidCrystal.h> // LCD Kirjasto
-LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
+LiquidCrystal lcd(2, 3, 4, 5, 6, 7);
 
 const int trigPin = 9; //Määritellään Sensorin pinnit.
 const int echoPin = 10;
@@ -15,7 +15,7 @@ void setup() {
 }
 
 void loop() {
-  digitalWrite(trigPin, LOW); // Tyhjentää aron asettamalla trigPinnin LOW tilaan 2 mikrosekuntin ajaksi.
+  digitalWrite(trigPin, LOW); // Tyhjentää arvon asettamalla trigPinnin LOW tilaan 2 mikrosekuntin ajaksi.
   delayMicroseconds(2);
 
   digitalWrite(trigPin, HIGH); //Generoi ultraäänen näillä kolmella rivillä.
