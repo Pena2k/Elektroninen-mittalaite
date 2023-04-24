@@ -1,10 +1,13 @@
 #include <Adafruit_LiquidCrystal.h>
 #include <Keypad.h>
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
 
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 const byte ROWS = 4; 
 const byte COLS = 4;
 char valinta;
-float distance1, distance2, area;
+float distance1, distance2, area, pituus2;
 int digits[4];
 
 char hexaKeys[ROWS][COLS] = {
@@ -27,13 +30,14 @@ float pituus; 	// Muuttuja matkan pituudelle.
 
 int seconds = 0;
 
-Adafruit_LiquidCrystal lcd(0);
+//Adafruit_LiquidCrystal lcd(0);
 
 
 void setup()
 {
   lcd.begin(16, 2);
-  
+  lcd.init();
+  lcd.backlight();
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
   Serial.begin(9600);
@@ -58,10 +62,10 @@ void loop()
   digitalWrite(trigPin, LOW);
 
   kesto = pulseIn(echoPin, HIGH); //PulseIn komennolla luetaan matkustusaika
-  pituus = (kesto /2) * 0.0344444 + 0.25; // Laskee pituuden kertomalla PulseIn:in mittaaman keston käyttämällä valon nopeuden kaavaa.
+  pituus = (kesto /2) * 0.0344444 - 1.2; // Laskee pituuden kertomalla PulseIn:in mittaaman keston käyttämällä valon nopeuden kaavaa.
   
    
-  if (key == '2') { // jos painallus on numero 1
+  if (key == '2') { // jos painallus on numero 2, tulosta cm
     lcd.clear();
     lcd.setCursor(0,0);
     lcd.print("Pituus cm = ");
@@ -71,7 +75,7 @@ void loop()
     return;
   }
   else if
-	(key == '3') {					//metrit
+	(key == '3') {					// jos painallus on numero 3, tulosta metrit
     lcd.clear();
     lcd.setCursor(0,0);
     lcd.print("Pituus m: ");
@@ -79,7 +83,7 @@ void loop()
     lcd.setCursor(0,1);
   	lcd.print(pituus * 0.01 );
   }
-  else if(key == '1') {				//Millimetrit
+  else if(key == '1') {				// jos painallus on 1 tulosta millimetrit
     lcd.clear();
     lcd.setCursor(0,0);
     lcd.print("millimetrit");
@@ -90,7 +94,7 @@ void loop()
   else if
 	(key == '4') {
     lcd.clear();
-    lcd.setCursor(0, 0);			//Mittausten tallentaminen
+    lcd.setCursor(0, 0);			//Mittausten tallentaminen pinta-alaa varten
   	lcd.print("Mittaus 1:");  
     	//if(Serial.available() > 0) {
       		//char input = Serial.read();
@@ -109,14 +113,14 @@ void loop()
   digitalWrite(trigPin, LOW);
 
   kesto = pulseIn(echoPin, HIGH); //PulseIn komennolla luetaan matkustusaika
-  pituus = (kesto /2) * 0.0344444 + 0.25; // Laskee pituuden 
+  pituus2 = (kesto /2) * 0.0344444 - 1.2; // Laskee pituuden 
     
-     distance1 = pituus;
+     distance1 = pituus2 *0.01;
                 
          // }
         
     lcd.setCursor(0, 1);
-    lcd.print(pituus);
+    lcd.print(pituus2 * 0.01);
     delay(5000);
   
     
@@ -138,19 +142,19 @@ void loop()
   digitalWrite(trigPin, LOW);
 
   kesto = pulseIn(echoPin, HIGH); //PulseIn komennolla luetaan matkustusaika
-  pituus = (kesto /2) * 0.0344444 + 0.25; // Laskee pituuden 
+  pituus2 = (kesto /2) * 0.0344444 - 1.2; // Laskee pituuden 
     
-       distance2 = pituus;
+       distance2 = pituus2 *0.01;
      
     lcd.setCursor(0, 1);
-    lcd.print(pituus);
+    lcd.print(pituus2 *0.01);
     delay(5000); 
     
     area = distance1 * distance2;
     
     lcd.clear();
   	lcd.setCursor(0, 0);
-  	lcd.print("Pinta-ala:");
+  	lcd.print("Pinta-ala m2:");
   	lcd.setCursor(0, 1);
   	lcd.print(area, 2);
     delay(5000);
